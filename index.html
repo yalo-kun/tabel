@@ -7,7 +7,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Табель">
-<title>Табель рабочих часов</title>
+<title>Time To Work — табель рабочих часов</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%232F6BFF'/%3E%3Cg fill='%23fff'%3E%3Crect x='14' y='16' width='36' height='6' rx='3'/%3E%3Crect x='14' y='29' width='24' height='6' rx='3'/%3E%3Crect x='14' y='42' width='30' height='6' rx='3'/%3E%3C/g%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -48,15 +49,30 @@
   /* Единственный источник цвета — неподвижное свечение сверху.
      Ничего не плавает и не меняет оттенок: фон остаётся фоном. */
   .bg{position:fixed;inset:0;z-index:-2;background:var(--bg);overflow:hidden}
+  /* Источник света вынесен за правый верхний угол — свет падает по диагонали
+     внутрь экрана, как от лампы за краем кадра. */
   .bg::before{
-    content:'';position:absolute;left:50%;top:-42vh;width:130vw;height:88vh;
-    transform:translateX(-50%);
+    content:'';position:absolute;right:-28vw;top:-46vh;width:118vw;height:118vh;
     background:radial-gradient(ellipse at center,
-      rgba(60,120,255,.30) 0%, rgba(45,90,220,.13) 38%, rgba(20,40,110,.04) 62%, transparent 76%);
+      rgba(70,130,255,.42) 0%, rgba(55,105,240,.24) 26%, rgba(38,75,200,.11) 48%,
+      rgba(20,40,120,.04) 68%, transparent 82%);
+  }
+  /* второй, слабый отсвет снизу слева — чтобы низ страницы не проваливался в чёрноту */
+  .bg::after{
+    content:'';position:absolute;left:-24vw;bottom:-40vh;width:80vw;height:80vh;
+    background:radial-gradient(ellipse at center,
+      rgba(50,95,220,.13) 0%, rgba(35,70,170,.05) 45%, transparent 72%);
+  }
+  @media (max-width:700px){
+    .bg::before{right:-46vw;top:-30vh;width:150vw;height:95vh}
+    .bg::after{display:none}
   }
   .orb,.grid{display:none}
 
   .wrap{max-width:660px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+  /* карточки не вылезают за свою колонку и не налезают на соседнюю */
+  .side,.journal,.stats,.card,.prefs-bar{min-width:0;max-width:100%}
+  .card{overflow:hidden}
 
   /* ---------- поверхности ---------- */
   .card{
@@ -68,8 +84,21 @@
   /* ---------- шапка ---------- */
   header{display:flex;align-items:center;justify-content:space-between;gap:12px;
          padding:2px 2px 10px;margin-bottom:2px}
-  h1{font-size:21px;font-weight:650;letter-spacing:-.03em;margin:0}
-  .sub{color:var(--faint);font-size:13px;margin-top:1px}
+  /* Логотип: знак из трёх полос — по одной на каждое слово названия,
+     рядом само название в три строки. Полосы разной длины — как строки текста. */
+  .brand{display:flex;align-items:center;gap:11px;text-decoration:none;color:inherit;min-width:0}
+  .mark{width:34px;height:34px;flex:none;border-radius:10px;background:var(--blue);
+        display:flex;flex-direction:column;justify-content:center;gap:3.5px;padding:0 8px}
+  .mark i{display:block;height:3.5px;border-radius:2px;background:#fff}
+  .mark i:nth-child(1){width:100%}
+  .mark i:nth-child(2){width:56%}
+  .mark i:nth-child(3){width:78%}
+  .word{display:flex;flex-direction:column;line-height:.94;min-width:0}
+  .word b{font-size:12.5px;font-weight:700;letter-spacing:.01em;text-transform:uppercase;color:var(--text)}
+  .word b:nth-child(2){color:var(--dim)}
+  .brand-sub{color:var(--faint);font-size:12.5px;padding-left:13px;margin-left:2px;
+             border-left:1px solid var(--line);white-space:nowrap}
+  @media (max-width:700px){ .brand-sub{display:none} }
   .head-right{display:flex;align-items:center;gap:8px;flex:none}
   .ver{font-size:10.5px;color:#3E4451;letter-spacing:.05em;flex:none}
 
@@ -247,7 +276,11 @@
   .tag{display:inline-flex;align-items:center;gap:8px;padding:6px 13px;border-radius:999px;
        border:1px solid var(--line);background:var(--surface-2);font-size:12px;color:var(--dim)}
   .tag i{width:5px;height:5px;border-radius:50%;background:var(--blue-2);display:block}
-  .gate .tag{margin:0 0 18px}
+  .mark.big{width:56px;height:56px;border-radius:16px;gap:5.5px;padding:0 13px;margin-bottom:14px}
+  .mark.big i{height:5.5px}
+  .word.big{line-height:.96;margin-bottom:16px}
+  .word.big b{font-size:19px;letter-spacing:.005em}
+  .gate .tag{margin:0 0 20px}
   .gate h2{font-size:clamp(27px,5vw,36px);font-weight:700;letter-spacing:-.04em;
            line-height:1.12;margin:0 0 12px;width:100%}
   .gate p{color:var(--dim);font-size:14.5px;line-height:1.6;margin:0 0 22px;max-width:40ch}
@@ -467,13 +500,13 @@
     header{grid-area:head}
     h1{font-size:24px}
     .stats{grid-area:stats}
-    .side{grid-area:side;position:sticky;top:28px;display:flex;flex-direction:column;gap:14px}
-    .journal{grid-area:journal;display:flex;flex-direction:column;gap:12px}
+    .side{grid-area:side;display:flex;flex-direction:column;gap:14px;min-width:0}
+    .journal{grid-area:journal;display:flex;flex-direction:column;gap:12px;min-width:0}
     .prefs-bar{grid-area:prefs}
     .filters{grid-template-columns:220px}
     html:not(.authed) .wrap{max-width:720px;grid-template-columns:1fr;
           grid-template-areas:"head" "side" "prefs"}
-    html:not(.authed) .side{position:static;gap:12px}
+    html:not(.authed) .side{gap:12px}
     .cab-in{padding-top:38px}
   }
 
@@ -488,10 +521,11 @@
 
 <div class="wrap">
   <header>
-    <div>
-      <h1 data-i18n="title">Табель рабочих часов</h1>
-      <div class="sub" data-i18n="subtitle">Смены пишутся в Google Таблицу</div>
-    </div>
+    <a class="brand" href="./" aria-label="Time To Work">
+      <span class="mark" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span class="word"><b>Time</b><b>To</b><b>Work</b></span>
+      <span class="brand-sub" data-i18n="subtitle">Табель рабочих часов</span>
+    </a>
     <div class="head-right">
       <button class="icon-btn" id="refreshBtn" data-i18n-al="refresh" aria-label="Обновить">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
@@ -502,7 +536,7 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 010 18M12 3a15 15 0 000 18"/></svg>
         <span id="langCode">RU</span>
       </button>
-      <span class="ver" id="ver">v19</span>
+      <span class="ver" id="ver">v21</span>
       <div class="lamp"><span class="dot" id="dot"></span><span id="state">нет связи</span></div>
       <button class="me-btn" id="meBtn" title="Личный кабинет">
         <span class="nm" id="meName">Кабинет</span>
@@ -519,6 +553,8 @@
 
   <div class="side">
     <section class="card gate" id="gate">
+      <span class="mark big" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span class="word big"><b>Time</b><b>To</b><b>Work</b></span>
       <span class="tag"><i></i><span data-i18n="tagline">Учёт смен для бригады</span></span>
       <h2 data-i18n="gateTitle">Табель личный</h2>
       <p data-i18n="heroLead">Записывайте смены с телефона.</p>
@@ -652,7 +688,10 @@
 <div class="cab" id="cab" hidden>
   <div class="cab-in">
     <div class="cab-top">
-      <span class="tag"><i></i><span id="cabTag">Личный кабинет</span></span>
+      <span class="brand" style="gap:9px">
+        <span class="mark" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span class="tag" style="margin:0"><i></i><span id="cabTag">Личный кабинет</span></span>
+      </span>
       <button class="icon-btn" data-close-cab data-i18n-al="close" aria-label="Закрыть">✕</button>
     </div>
 
@@ -838,7 +877,7 @@ var LANGS = {
 
 var STR = {
   ru: {
-    title:'Табель рабочих часов', subtitle:'Смены пишутся в Google Таблицу',
+    title:'табель рабочих часов', subtitle:'Табель рабочих часов',
     cabinet:'Кабинет', personalCab:'Личный кабинет', staffLogin:'Вход для сотрудников',
     newShift:'Новая смена', fillTime:'Заполните время — часы посчитаются сами',
     employee:'Сотрудник', date:'Дата', start:'Начало', end:'Конец',
@@ -908,7 +947,7 @@ var STR = {
     today:'сегодня', yesterday:'вчера', dateReset:'Дата обновлена на сегодня'
   },
   en: {
-    title:'Work Hours Timesheet', subtitle:'Shifts are saved to Google Sheets',
+    title:'work hours timesheet', subtitle:'Work hours timesheet',
     cabinet:'Account', personalCab:'Personal account', staffLogin:'Staff sign-in',
     newShift:'New shift', fillTime:'Enter the times — hours are calculated for you',
     employee:'Employee', date:'Date', start:'Start', end:'End',
@@ -1034,7 +1073,7 @@ function money(n){
 
 function applyI18n(){
   document.documentElement.lang = lang;
-  document.title = t('title');
+  document.title = 'Time To Work — ' + t('title');
   [].forEach.call(document.querySelectorAll('[data-i18n]'), function(el){
     el.textContent = t(el.dataset.i18n);
   });
@@ -2064,7 +2103,7 @@ window.addEventListener('resize', function(){ clearTimeout(window.rz); window.rz
 setInterval(function(){ if (lastSync && $('dot').className.indexOf('on') > -1) syncedState(); }, 60000);
 
 (function init(){
-  console.log('Табель — сборка v19');
+  console.log('Time To Work (TTW) — сборка v21');
   auth = loadAuth();
 
   try { lang = localStorage.getItem(LANG_KEY) || detectLang(); } catch(e){ lang = detectLang(); }
