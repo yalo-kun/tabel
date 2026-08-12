@@ -220,11 +220,18 @@
   .me-btn .av{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;flex:none;
     font-size:10.5px;font-weight:700;color:#fff;background:var(--blue)}
   html.authed .me-btn{border-color:#2C3B5E}
-  html.is-admin .me-btn{border-color:#4A3A16;background:rgba(224,163,60,.10)}
-  html.is-admin .me-btn .av{background:#E0A33C;color:#1A1204}
-  /* админу главный экран не нужен — он работает в консоли */
-  html.is-admin .stats,html.is-admin .journal,html.is-admin .form,html.is-admin .away{display:none}
-  html.is-admin .gate{display:flex}
+  html.is-root .me-btn{border-color:#4A3A16;background:rgba(224,163,60,.10)}
+  html.is-root .me-btn .av{background:#E0A33C;color:#1A1204}
+  /* кнопка консоли: янтарная, чтобы не путать с личным кабинетом */
+  .adm-btn{display:none;align-items:center;gap:7px;flex:none;height:36px;padding:0 13px;
+    border-radius:999px;cursor:pointer;font-family:var(--font);font-size:12.5px;font-weight:600;
+    color:#E9BE72;background:rgba(224,163,60,.10);border:1px solid rgba(224,163,60,.38)}
+  .adm-btn svg{width:15px;height:15px;flex:none}
+  html.is-admin .adm-btn{display:flex}
+  @media (max-width:700px){ .adm-btn span{display:none} .adm-btn{padding:0 11px} }
+  /* главному администратору рабочий экран не нужен — он живёт в консоли */
+  html.is-root .stats,html.is-root .journal,html.is-root .form,html.is-root .away{display:none}
+  html.is-root .gate{display:flex}
 
   /* ---------- статистика: одна плита с разделителями ---------- */
   .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
@@ -540,10 +547,12 @@
   .mark.sm i{height:3px;background:#191104}
   .adm-id b{display:block;font-size:14px;font-weight:650;letter-spacing:-.01em}
   .adm-id span{display:block;font-size:11.5px;color:#6E7786}
-  .adm-tools{display:flex;align-items:center;gap:7px;flex:none;flex-wrap:wrap;justify-content:flex-end}
-  .ab{height:32px;padding:0 12px;border-radius:8px;cursor:pointer;text-decoration:none;
-      display:inline-flex;align-items:center;gap:6px;font-family:var(--font);font-size:12.5px;
+  .adm-tools{display:flex;align-items:center;gap:7px;flex-wrap:wrap;justify-content:flex-end;min-width:0}
+  .ab{min-height:32px;padding:0 13px;border-radius:8px;cursor:pointer;text-decoration:none;
+      display:inline-flex;align-items:center;justify-content:center;gap:6px;
+      font-family:var(--font);font-size:12.5px;line-height:1;
       color:#B9C0CC;background:var(--as);border:1px solid var(--al);
+      flex:0 0 auto;white-space:nowrap;                 /* не сжимается и не переносится */
       transition:color .2s var(--ease),border-color .2s var(--ease)}
   .ab:hover{color:#fff;border-color:#2C333F}
   .ab.x{width:32px;padding:0;justify-content:center;font-size:13px}
@@ -569,7 +578,7 @@
   .au .an b{display:block;font-size:13px;font-weight:550;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .au .an span{display:block;font-size:11px;color:#6E7786;font-variant-numeric:tabular-nums}
   .au .ah{font-size:12px;color:#8A93A3;font-variant-numeric:tabular-nums;flex:none}
-  .au.adm-role .ai{background:#4A5468}
+  .au.adm-role .ai{background:var(--am);color:#1A1204}
   .adm-none{padding:16px 12px;font-size:12.5px;color:#6E7786;text-align:center}
 
   .adm-main{overflow-y:auto;padding:16px;min-height:0}
@@ -585,7 +594,7 @@
   .akpi span{display:block;font-size:11px;color:#6E7786;margin-top:2px}
 
   .abar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
-  .abar input,.abar select{height:34px;padding:0 10px;border-radius:8px;font-size:13px;
+  .abar input,.abar select{height:34px;padding:0 10px;border-radius:8px;font-size:13px;max-width:100%;
     color:#E8EBF0;background:var(--as);border:1px solid var(--al);font-family:var(--font);color-scheme:dark}
   .abar input:focus,.abar select:focus{outline:none;border-color:var(--am)}
   .abar .sp{flex:1}
@@ -612,12 +621,32 @@
   .acard h4{margin:0 0 10px;font-size:12.5px;font-weight:600;color:#8A93A3;
             letter-spacing:.05em;text-transform:uppercase}
   .arow{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-  .arow input,.arow select{height:34px;padding:0 10px;border-radius:8px;font-size:13px;flex:1;min-width:120px;
+  .arow input,.arow select{height:34px;padding:0 10px;border-radius:8px;font-size:13px;
+    flex:1 1 150px;min-width:0;                          /* поля тянутся, кнопки — нет */
     color:#E8EBF0;background:#0E1116;border:1px solid var(--al);font-family:var(--font);color-scheme:dark}
+  .arow input[type=date],.arow input[type=time]{flex:0 1 150px}
+  .arow .sw input{flex:0 0 38px}
+  .arow > label{flex:0 0 auto}
   .arow input:focus,.arow select:focus{outline:none;border-color:var(--am)}
   .arow label{display:flex;align-items:center;gap:6px;font-size:12px;color:#8A93A3;cursor:pointer}
   .adm-danger{border-color:#3A2320}
+  .sw{display:flex;align-items:center;gap:9px;cursor:pointer;flex:none}
+  .sw input{appearance:none;-webkit-appearance:none;width:38px;height:22px;flex:none;min-width:0;
+    border-radius:999px;background:#232833;border:1px solid var(--al);position:relative;cursor:pointer;
+    transition:background .22s var(--ease),border-color .22s var(--ease)}
+  .sw input::after{content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;
+    background:#7E8798;transition:transform .22s var(--ease),background .22s var(--ease)}
+  .sw input:checked{background:rgba(224,163,60,.28);border-color:var(--am)}
+  .sw input:checked::after{transform:translateX(16px);background:var(--am)}
+  .sw span{font-size:13px;color:#B9C0CC}
+  .badge{font-size:11px;color:#E9BE72;background:rgba(224,163,60,.12);
+         border:1px solid rgba(224,163,60,.32);border-radius:999px;padding:4px 10px;flex:none}
 
+  @media (max-width:560px){
+    .arow{flex-direction:column;align-items:stretch}
+    .arow input,.arow select,.arow .ab{flex:1 1 auto;width:100%}
+    .arow .sp{display:none}
+  }
   @media (max-width:860px){
     .adm-body{grid-template-columns:1fr;grid-template-rows:auto 1fr}
     .adm-side{border-right:0;border-bottom:1px solid var(--al);max-height:38vh}
@@ -759,8 +788,14 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 010 18M12 3a15 15 0 000 18"/></svg>
         <span id="langCode">RU</span>
       </button>
-      <span class="ver" id="ver">v29</span>
+      <span class="ver" id="ver">v31</span>
       <div class="lamp"><span class="dot" id="dot"></span><span id="state">нет связи</span></div>
+      <button class="adm-btn lift" id="admBtn" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 3l7 3.5v5c0 4.2-2.9 7.6-7 8.5-4.1-.9-7-4.3-7-8.5v-5L12 3z"/><path d="M9.5 12l1.8 1.8 3.5-3.6"/>
+        </svg>
+        <span data-i18n="adminConsole">Админ консоль</span>
+      </button>
       <button class="me-btn lift" id="meBtn" title="Личный кабинет">
         <span class="nm" id="meName">Кабинет</span>
         <span class="av" id="meAv">
@@ -1209,6 +1244,9 @@ var STR = {
     userDeleted:'Сотрудник удалён', passSet:'Пароль изменён', renamed:'Логин изменён',
     synced:'Листы пересобраны', adminHint:'Полный доступ: правка и удаление любых смен',
     editShift:'Правка смены', noShifts:'Смен нет',
+    rights:'Права доступа', grant:'Выдать доступ к консоли',
+    granted:'Доступ выдан', revoked:'Доступ снят', hasAccess:'есть доступ к консоли',
+    rootAdmin:'Главный администратор', adminConsole:'Админ консоль',
     today:'сегодня', yesterday:'вчера', dateReset:'Дата обновлена на сегодня'
   },
   en: {
@@ -1291,6 +1329,9 @@ var STR = {
     userDeleted:'Employee deleted', passSet:'Password changed', renamed:'Login changed',
     synced:'Sheets rebuilt', adminHint:'Full access: edit and delete any shift',
     editShift:'Edit shift', noShifts:'No shifts',
+    rights:'Access rights', grant:'Grant console access',
+    granted:'Access granted', revoked:'Access revoked', hasAccess:'has console access',
+    rootAdmin:'Root administrator', adminConsole:'Admin console',
     today:'today', yesterday:'yesterday', dateReset:'Date reset to today'
   }
 };
@@ -1456,6 +1497,7 @@ function initials(name){
 }
 function isAuthed(){ return !!(auth.login && auth.token); }
 function isAdmin(){ return !!(isAuthed() && auth.admin); }
+function isRoot(){ return !!(isAuthed() && auth.root); }
 
 function fillRate(){
   var v = loadRate();
@@ -1466,8 +1508,10 @@ function fillRate(){
 
 function applyAuth(){
   document.documentElement.classList.toggle('authed', isAuthed());
-  $('meName').textContent = isAuthed() ? (isAdmin() ? t('console') : auth.login) : t('cabinet');
+  $('meName').textContent = isAuthed() ? (isRoot() ? t('console') : auth.login) : t('cabinet');
   document.documentElement.classList.toggle('is-admin', isAdmin());
+  document.documentElement.classList.toggle('is-root', isRoot());
+  if ($('admBtn')) $('admBtn').hidden = !isAdmin();
   $('meAv').innerHTML = isAuthed() ? initials(auth.login) :
     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:14px;height:14px">' +
     '<circle cx="12" cy="8.5" r="3.6"/><path d="M4.5 20a7.5 7.5 0 0115 0"/></svg>';
@@ -1538,8 +1582,15 @@ function absorb(d){
   if (d.rows) rows = d.rows;
   if (d.absences) absences = d.absences;
   if (d.users) users = d.users;
-  if (d.admin !== undefined && isAuthed() && auth.admin !== d.admin){
-    auth.admin = d.admin; saveAuth(auth);
+  // роль обновляем только если сервер её действительно прислал:
+  // отсутствие поля не должно молча лишать человека прав
+  if (isAuthed() && d.admin !== undefined){
+    var nextAdmin = !!d.admin;
+    var nextRoot = (d.root === undefined) ? !!auth.root : !!d.root;
+    if (auth.admin !== nextAdmin || auth.root !== nextRoot){
+      auth.admin = nextAdmin; auth.root = nextRoot;
+      saveAuth(auth); applyAuth();
+    }
   }
   if (isAdmin() && !$('adm').hidden) renderAdm();
   if (d.sheetUrl){ sheetUrl = d.sheetUrl; $('sheetLink').href = sheetUrl; }
@@ -2143,7 +2194,8 @@ function renderAdmMain(){
 
   box.innerHTML =
     '<div class="ah-head">' +
-      '<div><h2>' + esc(u.login) + (u.admin ? ' · ' + t('admin') : '') + '</h2>' +
+      '<div><h2>' + esc(u.login) +
+        (u.root ? ' · ' + t('rootAdmin') : (u.admin ? ' · ' + t('admin') : '')) + '</h2>' +
       '<div class="meta">' + t('regDate') + ': ' + esc(u.created || '—') +
       ' · ' + t('lastLogin') + ': ' + esc(u.last || '—') + '</div></div>' +
     '</div>' +
@@ -2191,24 +2243,28 @@ function renderAdmMain(){
       '<button class="ab go" id="aaAdd">+ ' + t('writeShift') + '</button>' +
     '</div></div>' +
 
-    (u.admin ? '' :
+    // права выдаёт и снимает только тот, кто уже в консоли; главного админа не трогаем
+    (u.root ? '' :
+    '<div class="acard"><h4>' + t('rights') + '</h4><div class="arow">' +
+      '<label class="sw"><input type="checkbox" id="agGrant"' + (u.admin ? ' checked' : '') + '>' +
+        '<span>' + t('grant') + '</span></label><span class="sp"></span>' +
+      (u.admin ? '<span class="badge">' + t('hasAccess') + '</span>' : '') +
+    '</div></div>') +
+
     '<div class="acard"><h4>' + t('setPass') + '</h4><div class="arow">' +
       '<input type="text" id="apPass" placeholder="' + t('newPass') + '" autocomplete="off">' +
-      '<button class="ab" id="apSet">' + t('setPass') + '</button>' +
-      '<input type="text" id="arName" placeholder="' + t('renameTo') + '" autocomplete="off">' +
-      '<button class="ab" id="arDo">' + t('rename') + '</button>' +
+      '<button class="ab go" id="apSet">' + t('setPass') + '</button>' +
+      (u.root ? '' :
+        '<input type="text" id="arName" placeholder="' + t('renameTo') + '" autocomplete="off">' +
+        '<button class="ab" id="arDo">' + t('rename') + '</button>') +
     '</div></div>' +
+
+    (u.root || u.login === auth.login ? '' :
     '<div class="acard adm-danger"><h4>' + t('delUser') + '</h4><div class="arow">' +
       '<label><input type="checkbox" id="adWith" style="flex:none;min-width:0;width:16px;height:16px"> ' +
         t('withShifts') + '</label><span class="sp"></span>' +
       '<button class="ab warn" id="adDo">' + t('delUser') + '</button>' +
-    '</div></div>') +
-
-    (u.admin ?
-    '<div class="acard"><h4>' + t('setPass') + '</h4><div class="arow">' +
-      '<input type="text" id="apPass" placeholder="' + t('newPass') + '" autocomplete="off">' +
-      '<button class="ab go" id="apSet">' + t('setPass') + '</button>' +
-    '</div></div>' : '');
+    '</div></div>');
 }
 
 function renderAdm(){ renderAdmUsers(); renderAdmMain(); }
@@ -2225,7 +2281,14 @@ $('admUsers').addEventListener('click', function(e){
 });
 
 $('admMain').addEventListener('change', function(e){
-  if (e.target.id === 'admMonth'){ admMonth = e.target.value; renderAdmMain(); }
+  if (e.target.id === 'admMonth'){ admMonth = e.target.value; renderAdmMain(); return; }
+
+  if (e.target.id === 'agGrant'){
+    var on = e.target.checked;
+    send({ action:'adminGrant', login:auth.login, token:auth.token, target:admSel, grant:on },
+      function(){ say(t(on ? 'granted' : 'revoked')); renderAdm(); },
+      function(){ e.target.checked = !on; });          // сервер отказал — вернули галочку
+  }
 });
 
 $('admMain').addEventListener('click', function(e){
@@ -2281,7 +2344,7 @@ $('admSync').addEventListener('click', function(){
   send({ action:'adminSync', login:auth.login, token:auth.token }, function(){ say(t('synced')); });
 });
 $('admOut').addEventListener('click', function(){
-  auth = { login:'', token:'', admin:false };
+  auth = { login:'', token:'', admin:false, root:false };
   saveAuth(auth);
   rows = []; users = []; absences = []; admSel = '';
   closeAdm();
@@ -2468,7 +2531,8 @@ $('selTz').addEventListener('change', function(){
   if (isAuthed()) renderCab();
 });
 
-$('meBtn').addEventListener('click', function(){ isAdmin() ? openAdm() : openCab(); });
+$('meBtn').addEventListener('click', function(){ isRoot() ? openAdm() : openCab(); });
+$('admBtn').addEventListener('click', openAdm);
 $('gateBtn').addEventListener('click', openCab);
 document.addEventListener('click', function(e){
   if (e.target.closest && e.target.closest('[data-close-cab]')) closeCab();
@@ -2506,9 +2570,9 @@ function doLogin(){
   if (apiVer && apiVer < 5) { say(t('scriptOld'), true); return; }
   $('lGo').disabled = true;
   send({ action: (authMode === 'reg' ? 'register' : 'auth'), login:login, pass:pass }, function(d){
-    auth = { login:d.login, token:d.token, admin: !!d.admin };
+    auth = { login:d.login, token:d.token, admin: !!d.admin, root: !!d.root };
     saveAuth(auth);
-    if (auth.admin){
+    if (auth.root){
       $('lPass').value = ''; $('lPass2').value = '';
       applyAuth(); closeCab(); openAdm();
       say(t('signedIn'));
@@ -2641,7 +2705,7 @@ setInterval(function(){ if (lastSync && $('dot').className.indexOf('on') > -1) s
 document.documentElement.classList.add('boot');
 
 (function init(){
-  console.log('Time To Work (TTW) — сборка v29');
+  console.log('Time To Work (TTW) — сборка v31');
   auth = loadAuth();
 
   try { lang = localStorage.getItem(LANG_KEY) || detectLang(); } catch(e){ lang = detectLang(); }
@@ -2661,7 +2725,7 @@ document.documentElement.classList.add('boot');
   $('aFrom').value = day;
   $('aTo').value = day;
   $('fMonth').value = day.slice(0, 7);
-  if (isAuthed() && !isAdmin()) $('person').value = auth.login;
+  if (isAuthed() && !isRoot()) $('person').value = auth.login;
   $('api').value = API_URL;
   setMode('login');
   applyAuth();
@@ -2673,7 +2737,7 @@ document.documentElement.classList.add('boot');
   requestAnimationFrame(function(){
     document.documentElement.classList.remove('boot');
     document.documentElement.classList.add('ready');
-    if (isAdmin()) openAdm();
+    if (isRoot()) openAdm();               // главный админ сразу попадает в консоль
   });
   load();
 })();
