@@ -156,9 +156,8 @@
   html.ready .stats{--in:60ms}
   html.ready .side{--in:110ms}
   html.ready .journal{--in:170ms}
-  html.ready .prefs-bar{--in:230ms}
   /* карточки не вылезают за свою колонку и не налезают на соседнюю */
-  .side,.journal,.stats,.card,.prefs-bar{min-width:0;max-width:100%}
+  .side,.journal,.stats,.card{min-width:0;max-width:100%}
   .card{overflow:hidden}
 
   /* ---------- поверхности ---------- */
@@ -413,13 +412,6 @@
   #fPerson{display:none}
 
   /* ---------- настройки ---------- */
-  .prefs-bar{display:flex;flex-wrap:wrap;gap:10px 20px;align-items:center;padding:12px 16px;
-             border-radius:14px;background:var(--surface);border:1px solid var(--line)}
-  .pf{display:flex;align-items:center;gap:9px;flex:1 1 240px;min-width:0}
-  .pf svg{width:15px;height:15px;flex:none;color:var(--faint)}
-  .pf label{margin:0;font-size:12.5px;color:var(--faint);white-space:nowrap}
-  .pf .pill{min-height:40px;font-size:14px;flex:1;min-width:0}
-
   /* ---------- кто отсутствует ---------- */
   .away{padding:18px 20px}
   .away-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
@@ -548,7 +540,7 @@
   .adm-id b{display:block;font-size:14px;font-weight:650;letter-spacing:-.01em}
   .adm-id span{display:block;font-size:11.5px;color:#6E7786}
   .adm-tools{display:flex;align-items:center;gap:7px;flex-wrap:wrap;justify-content:flex-end;min-width:0}
-  .ab{min-height:32px;padding:0 13px;border-radius:8px;cursor:pointer;text-decoration:none;
+  .ab{min-height:34px;padding:0 13px;border-radius:8px;cursor:pointer;text-decoration:none;
       display:inline-flex;align-items:center;justify-content:center;gap:6px;
       font-family:var(--font);font-size:12.5px;line-height:1;
       color:#B9C0CC;background:var(--as);border:1px solid var(--al);
@@ -620,13 +612,16 @@
   .acard{margin-top:14px;padding:13px;border-radius:10px;background:var(--as);border:1px solid var(--al)}
   .acard h4{margin:0 0 10px;font-size:12.5px;font-weight:600;color:#8A93A3;
             letter-spacing:.05em;text-transform:uppercase}
-  .arow{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  /* Сетка вместо flex: каждая ячейка не уже 150 px, поэтому кнопка
+     никогда не сжимается до переноса текста. */
+  .arow{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;align-items:center}
   .arow input,.arow select{height:34px;padding:0 10px;border-radius:8px;font-size:13px;
-    flex:1 1 150px;min-width:0;                          /* поля тянутся, кнопки — нет */
+    width:100%;min-width:0;
     color:#E8EBF0;background:#0E1116;border:1px solid var(--al);font-family:var(--font);color-scheme:dark}
-  .arow input[type=date],.arow input[type=time]{flex:0 1 150px}
-  .arow .sw input{flex:0 0 38px}
-  .arow > label{flex:0 0 auto}
+  .arow .ab{width:100%}
+  .arow .sp{display:none}
+  .arow > label{justify-self:start}
+  .arow .sw input{width:38px}
   .arow input:focus,.arow select:focus{outline:none;border-color:var(--am)}
   .arow label{display:flex;align-items:center;gap:6px;font-size:12px;color:#8A93A3;cursor:pointer}
   .adm-danger{border-color:#3A2320}
@@ -642,11 +637,6 @@
   .badge{font-size:11px;color:#E9BE72;background:rgba(224,163,60,.12);
          border:1px solid rgba(224,163,60,.32);border-radius:999px;padding:4px 10px;flex:none}
 
-  @media (max-width:560px){
-    .arow{flex-direction:column;align-items:stretch}
-    .arow input,.arow select,.arow .ab{flex:1 1 auto;width:100%}
-    .arow .sp{display:none}
-  }
   @media (max-width:860px){
     .adm-body{grid-template-columns:1fr;grid-template-rows:auto 1fr}
     .adm-side{border-right:0;border-bottom:1px solid var(--al);max-height:38vh}
@@ -742,16 +732,15 @@
     body{padding-top:28px}
     .wrap{max-width:1100px;display:grid;gap:14px 20px;align-items:start;
           grid-template-columns:minmax(330px,380px) 1fr;
-          grid-template-areas:"head head" "stats stats" "side journal" "prefs prefs"}
+          grid-template-areas:"head head" "stats stats" "side journal"}
     header{grid-area:head}
     h1{font-size:24px}
     .stats{grid-area:stats}
     .side{grid-area:side;display:flex;flex-direction:column;gap:14px;min-width:0}
     .journal{grid-area:journal;display:flex;flex-direction:column;gap:12px;min-width:0}
-    .prefs-bar{grid-area:prefs}
     .filters{grid-template-columns:220px}
     html:not(.authed) .wrap{max-width:720px;grid-template-columns:1fr;
-          grid-template-areas:"head" "side" "prefs"}
+          grid-template-areas:"head" "side"}
     html:not(.authed) .side{gap:12px}
     .cab-in{padding-top:38px}
   }
@@ -788,7 +777,7 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 010 18M12 3a15 15 0 000 18"/></svg>
         <span id="langCode">RU</span>
       </button>
-      <span class="ver" id="ver">v31</span>
+      <span class="ver" id="ver">v33</span>
       <div class="lamp"><span class="dot" id="dot"></span><span id="state">нет связи</span></div>
       <button class="adm-btn lift" id="admBtn" hidden>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -880,7 +869,7 @@
         </div>
       </div>
 
-      <div class="meter"><span class="big" id="calc">9.00</span><span class="unit">ч</span></div>
+      <div class="meter"><span class="big" id="calc">9.00</span><span class="unit" data-i18n="h">ч</span></div>
       <div class="meter-cap" id="calcCap" data-i18n="hoursPerShift">часов за смену</div>
       <div class="day-note" id="dayNote" hidden></div>
 
@@ -911,7 +900,7 @@
   <div class="journal">
     <div class="filters">
       <input class="pill" type="month" id="fMonth">
-      <select class="pill" id="fPerson"><option value="">Все сотрудники</option></select>
+      <select class="pill" id="fPerson"><option value="" data-i18n="allStaff">Все сотрудники</option></select>
     </div>
     <section class="card">
       <div class="summary">
@@ -922,24 +911,12 @@
             <i></i><span>нагрузка 0%</span>
           </div>
         </div>
-        <div class="val" id="grand">0.00<span>ч</span></div>
+        <div class="val" id="grand">0.00<span data-i18n="h">ч</span></div>
       </div>
       <div class="totals" id="totals"></div>
       <div class="list" id="list"></div>
     </section>
   </div>
-  <section class="prefs-bar">
-    <div class="pf">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 010 18M12 3a15 15 0 000 18"/></svg>
-      <label for="selLang" data-i18n="language">Язык</label>
-      <select class="pill" id="selLang"></select>
-    </div>
-    <div class="pf">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
-      <label for="selTz" data-i18n="timezone">Часовой пояс</label>
-      <select class="pill" id="selTz"></select>
-    </div>
-  </section>
 </div>
 
 <!-- ================= личный кабинет ================= -->
@@ -990,8 +967,7 @@
           <label for="api" data-i18n="apiUrl">Адрес веб-приложения</label>
           <input class="pill" id="api" type="url" inputmode="url" autocomplete="off"
                  placeholder="https://script.google.com/macros/s/…/exec">
-          <p class="hint">Возьмите актуальную ссылку в редакторе скрипта: Deploy → Manage
-             deployments → Web app URL. Она сохранится в этом браузере.</p>
+          <p class="hint" data-i18n="apiHint2">Ссылку берут в редакторе скрипта.</p>
         </div>
       </details>
     </div>
@@ -1013,9 +989,9 @@
           </div>
         </div>
         <div class="tile"><div class="k" data-i18n="shifts">Смен</div><div class="b" id="tShifts">0</div><div class="s"></div></div>
-        <div class="tile"><div class="k" data-i18n="avgShift">Средняя смена</div><div class="b" id="tAvg">0.00<span>ч</span></div><div class="s" data-i18n="byYourRecords">по вашим записям</div></div>
+        <div class="tile"><div class="k" data-i18n="avgShift">Средняя смена</div><div class="b" id="tAvg">0.00<span data-i18n="h">ч</span></div><div class="s" data-i18n="byYourRecords">по вашим записям</div></div>
         <div class="tile"><div class="k" data-i18n="overtime">Переработки</div><div class="b" id="tOver">0</div><div class="s" data-i18n="longer8">дольше 8 часов</div></div>
-        <div class="tile"><div class="k">Ночные</div><div class="b" id="tNight">0</div><div class="s">старт после 20:00</div></div>
+        <div class="tile"><div class="k" data-i18n="night">Ночные</div><div class="b" id="tNight">0</div><div class="s" data-i18n="nightNote">старт после 20:00</div></div>
       </div>
 
       <h3 data-i18n="payroll">Расчёт зарплаты</h3>
@@ -1159,10 +1135,8 @@ var MAX_SHIFTS_PER_DAY = 2;           // те же значения продуб
 
 /* ================= языки и часовой пояс ================= */
 var LANGS = {
-  ru: { name:'Русский',  locale:'ru-RU', cur:'RUB', tz:'Europe/Moscow' },
-  en: { name:'English',  locale:'en-US', cur:'USD', tz:'America/New_York' },
-  de: { name:'Deutsch',  locale:'de-DE', cur:'EUR', tz:'Europe/Berlin' },
-  es: { name:'Español',  locale:'es-ES', cur:'EUR', tz:'Europe/Madrid' }
+  ru: { name:'Русский', locale:'ru-RU', cur:'RUB', tz:'Europe/Moscow' },
+  en: { name:'English', locale:'en-US', cur:'USD', tz:'America/New_York' }
 };
 
 var STR = {
@@ -1247,6 +1221,8 @@ var STR = {
     rights:'Права доступа', grant:'Выдать доступ к консоли',
     granted:'Доступ выдан', revoked:'Доступ снят', hasAccess:'есть доступ к консоли',
     rootAdmin:'Главный администратор', adminConsole:'Админ консоль',
+    night:'Ночные', nightNote:'старт после 20:00',
+    apiHint2:'Ссылку берут в редакторе скрипта: Deploy → Manage deployments → Web app URL.',
     today:'сегодня', yesterday:'вчера', dateReset:'Дата обновлена на сегодня'
   },
   en: {
@@ -1332,12 +1308,11 @@ var STR = {
     rights:'Access rights', grant:'Grant console access',
     granted:'Access granted', revoked:'Access revoked', hasAccess:'has console access',
     rootAdmin:'Root administrator', adminConsole:'Admin console',
+    night:'Night', nightNote:'starting after 20:00',
+    apiHint2:'Take the link in the script editor: Deploy → Manage deployments → Web app URL.',
     today:'today', yesterday:'yesterday', dateReset:'Date reset to today'
   }
 };
-// немецкий и испанский пока показываются на английском — словари добавляются сюда же
-STR.de = STR.en;
-STR.es = STR.en;
 
 var LANG_KEY = 'tabel.lang', TZ_KEY = 'tabel.tz';
 var lang = 'ru', tz = 'Europe/Moscow';
@@ -1417,36 +1392,37 @@ function nextLang(){
 function setLang(v){
   lang = LANGS[v] ? v : 'ru';
   try { localStorage.setItem(LANG_KEY, lang); } catch(e){}
-  if ($('selLang')) $('selLang').value = lang;
-  if ($('selTz')) fillTz();
   langLabel();
   applyI18n();
   render();
   if (isAuthed() && !$('cab').hidden) renderCab();
+  if (isAdmin() && !$('adm').hidden) renderAdm();   // консоль тоже перерисовываем
+  if (!$('mEdit').hidden) $('mEdit').hidden = true; // окно правки собрано на старом языке
 }
 
-var TZ_LIST = ['Europe/Kaliningrad','Europe/Moscow','Europe/Samara','Asia/Yekaterinburg',
-  'Asia/Omsk','Asia/Krasnoyarsk','Asia/Irkutsk','Asia/Yakutsk','Asia/Vladivostok',
-  'Asia/Magadan','Asia/Kamchatka','Europe/Kyiv','Europe/Minsk','Asia/Almaty','Asia/Tashkent',
-  'Europe/London','Europe/Berlin','Europe/Madrid','Europe/Warsaw','Europe/Istanbul',
-  'Asia/Dubai','Asia/Kolkata','Asia/Shanghai','Asia/Tokyo','Australia/Sydney',
-  'America/New_York','America/Chicago','America/Denver','America/Los_Angeles','America/Sao_Paulo','UTC'];
-
-function tzOffset(zone){
-  try {
-    var s = new Intl.DateTimeFormat('en-US', { timeZone: zone, timeZoneName:'shortOffset' })
-      .formatToParts(new Date()).filter(function(p){ return p.type === 'timeZoneName'; })[0];
-    return s ? s.value.replace('GMT', 'UTC') : '';
-  } catch(e){ return ''; }
+function applyI18n(){
+  document.documentElement.lang = lang;
+  document.title = 'Time To Work — ' + t('title');
+  [].forEach.call(document.querySelectorAll('[data-i18n]'), function(el){
+    el.textContent = t(el.dataset.i18n);
+  });
+  [].forEach.call(document.querySelectorAll('[data-i18n-ph]'), function(el){
+    el.placeholder = t(el.dataset.i18nPh);
+  });
+  [].forEach.call(document.querySelectorAll('[data-i18n-al]'), function(el){
+    el.setAttribute('aria-label', t(el.dataset.i18nAl));
+    el.title = t(el.dataset.i18nAl);
+  });
 }
-function fillTz(){
-  var list = TZ_LIST.slice();
-  if (list.indexOf(tz) < 0) list.unshift(tz);
-  $('selTz').innerHTML = list.map(function(z){
-    var off = tzOffset(z);
-    return '<option value="' + z + '"' + (z === tz ? ' selected' : '') + '>' +
-           z.replace(/_/g, ' ') + (off ? ' · ' + off : '') + '</option>';
-  }).join('');
+
+function langLabel(){
+  var el = $('langCode');
+  if (el) el.textContent = lang.toUpperCase();
+}
+
+function nextLang(){
+  var keys = Object.keys(LANGS);
+  setLang(keys[(keys.indexOf(lang) + 1) % keys.length]);
 }
 
 var AUTH_KEY = 'tabel.auth';
@@ -1798,6 +1774,8 @@ function checkDay(){
 /* ---- отсутствия ---- */
 function today_(){ return todayTZ(); }
 function dm_(iso){ return fmtDate(iso); }
+// в таблице тип хранится по-русски; на экран выводим на выбранном языке
+function absType(v){ return t(String(v) === 'Отпуск' ? 'vacation' : 'sick'); }
 
 function renderAway(){
   var q = ($('absQ') ? $('absQ').value : '').trim().toLowerCase();
@@ -1830,7 +1808,7 @@ function renderAway(){
   if (!box) return;
   var mine = absences.filter(function(a){ return isAuthed() && same(a.person, auth.login) && a.to >= day; });
   box.innerHTML = mine.length ? mine.map(function(a){
-    return '<div class="away-row"><div class="nm">' + esc(a.type) + '</div>' +
+    return '<div class="away-row"><div class="nm">' + esc(absType(a.type)) + '</div>' +
       '<div class="dt">' + dm_(a.from) + '–' + dm_(a.to) + '</div>' +
       '<button class="x" data-abs="' + esc(a.id) + '" aria-label="Убрать">✕</button></div>';
   }).join('') : '';
@@ -2014,7 +1992,7 @@ function makeRow(r, wide, plain){
   el.className = 'row lift' + (plain ? '' : ' enter') + (String(r.id) === freshId ? ' fresh' : '');
   el.dataset.id = r.id;
   el.innerHTML = '<div class="rmain"><div class="rname"></div><div class="rmeta"></div></div>' +
-                 '<div class="rhrs">0<span>ч</span></div>' +
+                 '<div class="rhrs">0<span>' + t('h') + '</span></div>' +
                  '<button class="rdel" aria-label="Удалить">✕</button>';
   el.querySelector('.rdel').dataset.id = r.id;
   fillRow(el, r, wide);
@@ -2103,7 +2081,7 @@ function render(){
   names.sort();
   $('people').innerHTML = names.map(function(n){ return '<option value="' + esc(n) + '">'; }).join('');
   var cur = $('fPerson').value;
-  $('fPerson').innerHTML = '<option value="">Все сотрудники</option>' +
+  $('fPerson').innerHTML = '<option value="">' + t('allStaff') + '</option>' +
     names.map(function(n){ return '<option' + (n === cur ? ' selected' : '') + '>' + esc(n) + '</option>'; }).join('');
 
   var mon = $('fMonth').value, who = '';        // в списке и так только свои смены
@@ -2521,16 +2499,6 @@ $('refreshBtn').addEventListener('click', function(){
 });
 
 $('langBtn').addEventListener('click', nextLang);
-$('selLang').addEventListener('change', function(){ setLang(this.value); });
-$('selTz').addEventListener('change', function(){
-  tz = this.value;
-  try { localStorage.setItem(TZ_KEY, tz); } catch(e){}
-  var day = todayTZ();
-  if (!$('date').value) $('date').value = day;
-  render();
-  if (isAuthed()) renderCab();
-});
-
 $('meBtn').addEventListener('click', function(){ isRoot() ? openAdm() : openCab(); });
 $('admBtn').addEventListener('click', openAdm);
 $('gateBtn').addEventListener('click', openCab);
@@ -2705,17 +2673,13 @@ setInterval(function(){ if (lastSync && $('dot').className.indexOf('on') > -1) s
 document.documentElement.classList.add('boot');
 
 (function init(){
-  console.log('Time To Work (TTW) — сборка v31');
+  console.log('Time To Work (TTW) — сборка v33');
   auth = loadAuth();
 
   try { lang = localStorage.getItem(LANG_KEY) || detectLang(); } catch(e){ lang = detectLang(); }
   if (!LANGS[lang]) lang = 'ru';
-  try { tz = localStorage.getItem(TZ_KEY) || detectTz(); } catch(e){ tz = detectTz(); }
+  tz = detectTz();      // пояс берём из системы: выбирать вручную больше негде
 
-  $('selLang').innerHTML = Object.keys(LANGS).map(function(k){
-    return '<option value="' + k + '"' + (k === lang ? ' selected' : '') + '>' + LANGS[k].name + '</option>';
-  }).join('');
-  fillTz();
   langLabel();
   applyI18n();
 
