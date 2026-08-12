@@ -46,51 +46,105 @@
   }
   body.locked{overflow:hidden}
 
-  /* Фон-плазма: несколько крупных синих пятен медленно перетекают друг в друга,
-     сверху — тонкая горизонтальная развёртка, как на панели монитора.
-     Всё держится на transform и opacity, поэтому рисуется видеокартой. */
-  .bg{position:fixed;inset:0;z-index:-2;background:#05070C;overflow:hidden}
-  .bg .p{position:absolute;border-radius:50%;filter:blur(70px);will-change:transform,opacity}
-  .p1{width:78vw;height:78vh;right:-16vw;top:-24vh;
-      background:radial-gradient(circle at 50% 50%,rgba(91,163,255,.62),rgba(50,110,240,.26) 42%,transparent 70%);
-      animation:pl1 26s ease-in-out infinite alternate}
-  .p2{width:66vw;height:70vh;left:-14vw;top:6vh;
-      background:radial-gradient(circle at 50% 50%,rgba(46,96,230,.5),rgba(26,58,170,.2) 45%,transparent 72%);
-      animation:pl2 34s ease-in-out infinite alternate}
-  .p3{width:58vw;height:58vh;left:26vw;top:34vh;
-      background:radial-gradient(circle at 50% 50%,rgba(120,180,255,.34),rgba(60,120,240,.12) 45%,transparent 70%);
-      animation:pl3 30s ease-in-out infinite alternate}
-  .p4{width:52vw;height:56vh;right:6vw;bottom:-18vh;
-      background:radial-gradient(circle at 50% 50%,rgba(30,70,190,.34),transparent 68%);
-      animation:pl4 40s ease-in-out infinite alternate}
-  @keyframes pl1{from{transform:translate(0,0) scale(1);opacity:.85}
-                 to{transform:translate(-16%,12%) scale(1.22);opacity:1}}
-  @keyframes pl2{from{transform:translate(0,0) scale(1.05);opacity:.7}
-                 to{transform:translate(18%,-14%) scale(.85);opacity:1}}
-  @keyframes pl3{from{transform:translate(-12%,8%) scale(.9);opacity:.55}
-                 to{transform:translate(14%,-16%) scale(1.28);opacity:.95}}
-  @keyframes pl4{from{transform:translate(6%,0) scale(1.1);opacity:.6}
-                 to{transform:translate(-18%,-10%) scale(.9);opacity:.9}}
+  /* ===== Фон: медленные волны =====
+     Пятна вытянуты в эллипсы и не просто ездят, а вращаются и сжимаются по
+     разным осям. Вращение вытянутой формы читается как перекатывание волны —
+     при этом анимируется только transform, поэтому всё рисует видеокарта.
+     Поверх идут широкие «валы», плывущие по горизонтали с разной скоростью. */
+  .bg{position:fixed;inset:0;z-index:-2;overflow:hidden;background:#040814;isolation:isolate}
+  .bg .p{position:absolute;border-radius:50%;mix-blend-mode:screen;
+         filter:blur(58px);will-change:transform,opacity}
 
-  /* горизонтальная развёртка поверх пятен */
-  .bg .scan{position:absolute;inset:-2px;pointer-events:none;opacity:.5;
+  .p1{width:105vw;height:72vh;left:-18vw;top:-22vh;
+      background:radial-gradient(ellipse at 50% 50%,
+        rgba(120,185,255,.92) 0%, rgba(60,130,255,.5) 34%, rgba(25,70,200,.14) 62%, transparent 78%);
+      animation:sw1 28s ease-in-out infinite}
+  .p2{width:92vw;height:66vh;right:-22vw;top:-8vh;
+      background:radial-gradient(ellipse at 50% 50%,
+        rgba(70,140,255,.8) 0%, rgba(35,95,235,.4) 38%, rgba(18,50,170,.1) 66%, transparent 80%);
+      animation:sw2 36s ease-in-out infinite}
+  .p3{width:84vw;height:58vh;left:4vw;top:20vh;
+      background:radial-gradient(ellipse at 50% 50%,
+        rgba(150,200,255,.62) 0%, rgba(80,150,255,.3) 36%, transparent 72%);
+      animation:sw3 24s ease-in-out infinite}
+  .p4{width:88vw;height:62vh;right:-10vw;bottom:-24vh;
+      background:radial-gradient(ellipse at 50% 50%,
+        rgba(40,95,225,.62) 0%, rgba(20,55,175,.26) 40%, transparent 74%);
+      animation:sw4 42s ease-in-out infinite}
+  .p5{width:70vw;height:46vh;left:18vw;bottom:-10vh;
+      background:radial-gradient(ellipse at 50% 50%,
+        rgba(95,165,255,.5) 0%, rgba(45,105,230,.18) 42%, transparent 74%);
+      animation:sw5 32s ease-in-out infinite}
+
+  /* Каждая волна проходит полный круг: поднимается, кренится, оседает.
+     Ключевые кадры на 25/50/75 % не дают движению выглядеть маятником. */
+  @keyframes sw1{
+    0%{transform:translate(0,0) rotate(0deg) scale(1,1)}
+    25%{transform:translate(7%,5%) rotate(4deg) scale(1.12,.92)}
+    50%{transform:translate(12%,-3%) rotate(-3deg) scale(.94,1.14)}
+    75%{transform:translate(4%,7%) rotate(3deg) scale(1.08,1)}
+    100%{transform:translate(0,0) rotate(0deg) scale(1,1)}
+  }
+  @keyframes sw2{
+    0%{transform:translate(0,0) rotate(0deg) scale(1,1);opacity:.85}
+    30%{transform:translate(-9%,8%) rotate(-5deg) scale(.9,1.16);opacity:1}
+    60%{transform:translate(-14%,-6%) rotate(4deg) scale(1.16,.9);opacity:.9}
+    100%{transform:translate(0,0) rotate(0deg) scale(1,1);opacity:.85}
+  }
+  @keyframes sw3{
+    0%{transform:translate(0,0) rotate(0deg) scale(1,1);opacity:.6}
+    35%{transform:translate(10%,-7%) rotate(6deg) scale(1.18,.88);opacity:.95}
+    70%{transform:translate(-6%,6%) rotate(-4deg) scale(.9,1.12);opacity:.75}
+    100%{transform:translate(0,0) rotate(0deg) scale(1,1);opacity:.6}
+  }
+  @keyframes sw4{
+    0%{transform:translate(0,0) rotate(0deg) scale(1,1)}
+    40%{transform:translate(-11%,-6%) rotate(5deg) scale(1.14,.94)}
+    75%{transform:translate(6%,-10%) rotate(-4deg) scale(.92,1.1)}
+    100%{transform:translate(0,0) rotate(0deg) scale(1,1)}
+  }
+  @keyframes sw5{
+    0%{transform:translate(0,0) rotate(0deg) scale(1,1);opacity:.55}
+    45%{transform:translate(14%,-8%) rotate(-6deg) scale(1.2,.9);opacity:.85}
+    100%{transform:translate(0,0) rotate(0deg) scale(1,1);opacity:.55}
+  }
+
+  /* широкие валы: катятся по горизонтали насквозь, как зыбь */
+  .bg .sw{position:absolute;left:-60%;width:220%;border-radius:50%;
+          mix-blend-mode:screen;filter:blur(46px);will-change:transform;pointer-events:none}
+  .sw-a{top:8vh;height:34vh;
+        background:radial-gradient(ellipse at 50% 50%,rgba(110,175,255,.34),transparent 62%);
+        animation:roll 46s linear infinite}
+  .sw-b{top:44vh;height:40vh;
+        background:radial-gradient(ellipse at 50% 50%,rgba(55,120,245,.28),transparent 64%);
+        animation:roll-b 62s linear infinite}
+  @keyframes roll{from{transform:translateX(-14%) translateY(0)}
+                  50%{transform:translateX(0) translateY(-3vh)}
+                  to{transform:translateX(14%) translateY(0)}}
+  @keyframes roll-b{from{transform:translateX(12%) translateY(0)}
+                    50%{transform:translateX(0) translateY(3vh)}
+                    to{transform:translateX(-12%) translateY(0)}}
+
+  /* горизонтальная развёртка поверх — фактура панели монитора */
+  .bg .scan{position:absolute;inset:-4px;pointer-events:none;z-index:2;
     background:repeating-linear-gradient(180deg,
-      rgba(255,255,255,.055) 0 1px, rgba(0,0,0,.12) 1px 3px);
-    animation:scan 9s linear infinite}
+      rgba(255,255,255,.085) 0 1px, rgba(0,0,0,.28) 1px 3px);
+    animation:scan 6s linear infinite}
   @keyframes scan{from{transform:translateY(0)}to{transform:translateY(3px)}}
 
-  /* к низу страницы фон гасим, чтобы контент читался спокойно */
-  .bg::after{content:'';position:absolute;inset:0;
-    background:linear-gradient(180deg,rgba(5,7,12,.18) 0%,rgba(5,7,12,.62) 55%,rgba(5,7,12,.86) 100%)}
+  /* виньетка: центр светлый, края гаснут */
+  .bg::after{content:'';position:absolute;inset:0;z-index:3;pointer-events:none;
+    background:
+      radial-gradient(ellipse 92% 88% at 46% 34%, transparent 26%, rgba(3,6,16,.42) 62%, rgba(2,4,12,.9) 100%),
+      linear-gradient(180deg, transparent 0%, rgba(3,6,16,.30) 62%, rgba(3,6,16,.62) 100%)}
 
   @media (max-width:700px){
-    .p3,.p4{display:none}
-    .bg .p{filter:blur(56px)}
+    .p3,.p5,.sw-b{display:none}
+    .bg .p{filter:blur(46px)}
+    .bg .sw{filter:blur(38px)}
     .bg .scan{animation:none}
   }
-  @media (prefers-reduced-motion:reduce){
-    .bg .p,.bg .scan{animation:none}
-  }
+  @media (prefers-reduced-motion:reduce){ .bg .p,.bg .sw,.bg .scan{animation:none} }
   .orb,.grid{display:none}
 
   .wrap{max-width:660px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
@@ -572,7 +626,8 @@
 
 <div class="bg" aria-hidden="true">
   <span class="p p1"></span><span class="p p2"></span>
-  <span class="p p3"></span><span class="p p4"></span>
+  <span class="p p3"></span><span class="p p4"></span><span class="p p5"></span>
+  <span class="sw sw-a"></span><span class="sw sw-b"></span>
   <span class="scan"></span>
 </div>
 
@@ -593,7 +648,7 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 010 18M12 3a15 15 0 000 18"/></svg>
         <span id="langCode">RU</span>
       </button>
-      <span class="ver" id="ver">v26</span>
+      <span class="ver" id="ver">v28</span>
       <div class="lamp"><span class="dot" id="dot"></span><span id="state">нет связи</span></div>
       <button class="me-btn lift" id="meBtn" title="Личный кабинет">
         <span class="nm" id="meName">Кабинет</span>
@@ -2200,7 +2255,7 @@ setInterval(function(){ if (lastSync && $('dot').className.indexOf('on') > -1) s
 document.documentElement.classList.add('boot');
 
 (function init(){
-  console.log('Time To Work (TTW) — сборка v26');
+  console.log('Time To Work (TTW) — сборка v28');
   auth = loadAuth();
 
   try { lang = localStorage.getItem(LANG_KEY) || detectLang(); } catch(e){ lang = detectLang(); }
